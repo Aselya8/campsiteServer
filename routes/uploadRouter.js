@@ -1,17 +1,20 @@
 const express = require('express');
 const authenticate = require('../authenticate');
 const multer = require('multer');
-const { get } = require('mongoose');
+//const { get } = require('mongoose');
 
 //multer provides multer.diskStorage method
+//cb is a callback function
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => { //cb is a callback function
-        cb(null, 'public/image');
+    destination: (req, file, cb) => {
+        cb(null, 'public/images');
     },
     filename: (req, file, cb) => {
-        cb(null, file.originalname) //file.originalname it will make sure name of the file on the server will be the same as the name of the file on the client side
+        cb(null, file.originalname)
     }
 });
+//file.originalname it will make sure name of the file on the server will be the same as the name of the file on the client side
+
 
 const imageFileFilter = (req, file, cb) => {
     if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -27,7 +30,7 @@ const uploadRouter = express.Router();
 uploadRouter.route('/')
 .get(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
-    res.end('Get operation not supported on /imageUpload');
+    res.end('GET operation not supported on /imageUpload');
 })
 .post(authenticate.verifyUser, authenticate.verifyAdmin, upload.single('imageFile'), (req, res) => {
     res.statusCode = 200;
@@ -41,9 +44,6 @@ uploadRouter.route('/')
 .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res) => {
     res.statusCode = 403;
     res.end('DELETE operation not supported on /imageUpload');
-})
+});
 
-
-
-
-module.exports = uploadRouter.js
+module.exports = uploadRouter;
